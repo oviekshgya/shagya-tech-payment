@@ -6,9 +6,11 @@ import (
 )
 
 var (
-	UserController *controller.UserController
+	UserController  *controller.UserController
+	CronsController *controller.CronsController
 )
 
 func InitialRoute() {
 	UserController = controller.HandlerController(db.DBMongo, db.Client)
+	CronsController = controller.HandlerCronsController(db.DBMongo, db.Client)
 }

@@ -52,6 +52,7 @@ func Start() {
 
 	routes.InitialRoute()
 	routes.Route()
+	initCrons()
 	db.ConnectRabbitMQ()
 	go db.StartConsumerPayment()
 
