@@ -69,9 +69,8 @@ var Client *mongo.Client
 var DBMongo *mongo.Database
 
 func (conf DatabaseConfig) ConnectMongoDB() {
-	//uri := fmt.Sprintf("%s://%s:%s", conf.Driver, conf.Host, conf.Port)
-	//	uri := fmt.Sprintf("mongodb://shagya:shagyamongo09@103.139.192.137:27017/?authSource=admin")
-	uri := fmt.Sprintf("mongodb://appuser:apppassword123@103.139.192.137:27017/shagya-tech?authSource=shagya-tech")
+	//uri := fmt.Sprintf("mongodb://shagya-payment:shagya-payment09@103.139.192.137:27017/shagya-payment?authSource=shagya-payment")
+	uri := fmt.Sprintf("%s://%s:%s@%s:%s/%s?authSource=%s", conf.Driver, conf.Username, conf.Password, conf.Host, conf.Port, conf.Dbname, conf.Dbname)
 
 	clientOptions := options.Client().ApplyURI(uri)
 

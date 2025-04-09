@@ -16,14 +16,12 @@ FROM alpine:3.17 AS runner
 
 WORKDIR /app
 
-RUN apk add --no-cache libstdc++ libx11
-
 # Copy binary golang
 COPY --from=builder /app/shagya-tech-payment /app/shagya-tech-payment
 
-# Copy file-file python / asset
-COPY ./pkg/face/facev2.py /app/pkg/face/facev2.py
 COPY public/storage/img /app/public/storage/img
+COPY public/storage/json /app/public/storage/json
+
 COPY public/views /app/public/views
 COPY .env /app/.env
 COPY credentials.json /app/credentials.json
