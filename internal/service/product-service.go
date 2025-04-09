@@ -10,7 +10,7 @@ type ProductService struct {
 	Client *mongo.Client
 }
 
-func (s *ProductService) Product(category string, brand string, types string, code string) (*pkg.ResponseCekHarga, error) {
+func (s *ProductService) Product(category string, brand string, types string, code string) ([]*pkg.ResponseProduct, error) {
 
 	result, err := pkg.CekHargaRest(pkg.RequestCekHarga{
 		Category: category,
@@ -24,5 +24,20 @@ func (s *ProductService) Product(category string, brand string, types string, co
 	if err != nil {
 		return nil, err
 	}
-	return result, nil
+
+	var response []*pkg.ResponseProduct
+	if len(result.Data) > 0 {
+		for _, d := range result.Data {
+			response = append(response, &pkg.ResponseProduct{
+				ProductName:   d.ProductName,
+				Category:      d.Category,
+				Image:         "",
+				Price:         d.Price,
+				Stock:         d.Stock,
+				Desc:          d.Desc,
+				MiddlewareFee: 0,
+			})
+		}
+	}
+	return response, nil
 }

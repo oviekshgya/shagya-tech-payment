@@ -31,3 +31,13 @@ func (c *InitialResponse) Respose(httpcode int, message string, error bool, data
 		})
 	}
 }
+
+type ResponseProduct struct {
+	ProductName   string  `json:"product_name"`
+	Category      string  `json:"category"`
+	Price         int     `json:"price"`
+	Stock         int     `json:"stock"`
+	Desc          string  `json:"desc"`
+	MiddlewareFee float64 `bson:"middlewareFee"`
+	Image         string  `json:"image"`
+}
