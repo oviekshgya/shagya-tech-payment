@@ -52,7 +52,7 @@ func (s *ProductService) Product(category string, brand string, types string, co
 				matchCount := 0
 				words := strings.Fields(sz.Name)
 				for _, word := range words {
-					if strings.Contains(strings.ToLower(d.ProductName), strings.ToLower(word)) {
+					if strings.Contains(strings.ToLower(d.Brand), strings.ToLower(word)) {
 						matchCount++
 					}
 				}
