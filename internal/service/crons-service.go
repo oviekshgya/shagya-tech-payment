@@ -19,13 +19,14 @@ type CronsService struct {
 func (s *CronsService) GetDataJson() (interface{}, error) {
 
 	result, err := pkg.WithTransactionMongo(s.Client, func(sessCtx mongo.SessionContext) (interface{}, error) {
+
 		pwd, _ := os.Getwd()
 		fileData, err := ioutil.ReadFile(fmt.Sprintf("%s/public/storage/json/tokogame-data.json", pwd))
 		if err != nil {
 			log.Println("Error reading file:", err)
 		}
 
-		var jsonResponse models.MasterDataProduct
+		var jsonResponse []models.MasterDataProduct
 		err = json.Unmarshal(fileData, &jsonResponse)
 		if err != nil {
 			log.Println("Error unmarshaling JSON:", err)
@@ -36,9 +37,15 @@ func (s *CronsService) GetDataJson() (interface{}, error) {
 			MasterDataProductCollection: jsonResponse,
 		}
 
-		if created := model.Create(); created != nil {
-			return created, nil
+		data, errGet := model.GetAll()
+		fmt.Println("data", data)
+		if errGet == nil && len(data) <= 0 {
+			fmt.Println("Created", data)
+			if created := model.Create(jsonResponse); created != nil {
+				return created, nil
+			}
 		}
+		fmt.Println("ErrorGet", errGet)
 
 		return jsonResponse, nil
 	})

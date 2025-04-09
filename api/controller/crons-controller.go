@@ -28,11 +28,10 @@ func HandlerCronsController(db *mongo.Database, client *mongo.Client) *CronsCont
 }
 
 func (ct *CronsController) GetDataJson() bool {
-	result, err := ct.CronsController.GetDataJson()
+	_, err := ct.CronsController.GetDataJson()
 	if err != nil {
 		log.Println("CronsController.GetDataJson ERROR:", err)
 		return false
 	}
-	log.Println("CronsController.GetDataJson: ", result)
 	return true
 }

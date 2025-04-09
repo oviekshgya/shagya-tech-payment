@@ -2,10 +2,7 @@ package middlewares
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/basicauth"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"shagya-tech-payment/db"
-	"shagya-tech-payment/internal/models"
 )
 
 func CORSMiddleware() fiber.Handler {
@@ -15,40 +12,6 @@ func CORSMiddleware() fiber.Handler {
 		AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
 		AllowHeaders:     "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With, X-API-KEY, X-SIGNATURE, X-TIMESTAMP",
 		AllowCredentials: true,
-	})
-}
-
-//func BasicAuthMiddleware() fiber.Handler {
-//	return basicauth.New(basicauth.Config{
-//		Users: map[string]string{
-//			pkg.USERNAME: pkg.PASSWORD,
-//		},
-//		Unauthorized: func(c *fiber.Ctx) error {
-//			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
-//				"error": "Unauthorized",
-//			})
-//		},
-//	})
-//}
-
-func BasicAuthMiddleware() fiber.Handler {
-	return basicauth.New(basicauth.Config{
-		Authorizer: func(username, password string) bool {
-			var client = models.ClientImpl{
-				DB: db.DBMongo,
-			}
-			user, err := client.FindOne(username)
-			if err != nil {
-				return false
-			}
-
-			return user.PasswordAuth == password
-		},
-		Unauthorized: func(c *fiber.Ctx) error {
-			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
-				"error": "Forbidden",
-			})
-		},
 	})
 }
 
