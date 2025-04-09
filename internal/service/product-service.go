@@ -1,7 +1,9 @@
 package service
 
 import (
+	"fmt"
 	"go.mongodb.org/mongo-driver/mongo"
+	"shagya-tech-payment/internal/models"
 	"shagya-tech-payment/pkg"
 )
 
@@ -25,13 +27,24 @@ func (s *ProductService) Product(category string, brand string, types string, co
 		return nil, err
 	}
 
+	model := models.ProductImpl{
+		DB: s.DB,
+	}
+
 	var response []*pkg.ResponseProduct
 	if len(result.Data) > 0 {
 		for _, d := range result.Data {
+			var imageURL string
+			find, errFind := model.SearchProductByName(d.ProductName)
+			if errFind == nil {
+				imageURL = find.ImageURL
+			}
+			fmt.Println("err find:", errFind)
+
 			response = append(response, &pkg.ResponseProduct{
 				ProductName:   d.ProductName,
 				Category:      d.Category,
-				Image:         "",
+				Image:         imageURL,
 				Price:         d.Price,
 				Stock:         d.Stock,
 				Desc:          d.Desc,

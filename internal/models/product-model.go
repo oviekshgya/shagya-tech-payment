@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"strings"
 )
 
 const PRODUCT = "product"
@@ -47,4 +48,36 @@ func (m *ProductImpl) GetProductByName(productName string) (*Product, error) {
 		return nil, fmt.Errorf("failed to get productName: %v", err)
 	}
 	return &data, nil
+}
+
+func (m *ProductImpl) SearchProductByName(productName string) (*MasterDataProduct, error) {
+	ctx := context.TODO()
+	collection := m.DB.Collection(MASTERDATAPRODUCT)
+
+	var result MasterDataProduct
+	words := strings.Fields(productName)
+	if len(words) > 2 {
+		words = words[:2]
+	}
+
+	var andConditions []bson.M
+	for _, word := range words {
+		andConditions = append(andConditions, bson.M{
+			"name": bson.M{
+				"$regex":   word,
+				"$options": "i",
+			},
+		})
+	}
+
+	filter := bson.M{
+		"$and": andConditions,
+	}
+
+	err := collection.FindOne(ctx, filter).Decode(&result)
+	if err != nil {
+		return nil, fmt.Errorf("failed to find product by name: %v | Value: %s", err, productName)
+	}
+
+	return &result, nil
 }

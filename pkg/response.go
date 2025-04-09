@@ -39,5 +39,5 @@ type ResponseProduct struct {
 	Stock         int     `json:"stock"`
 	Desc          string  `json:"desc"`
 	MiddlewareFee float64 `bson:"middlewareFee"`
-	Image         string  `json:"image"`
+	Image         string  `json:"image,omitempty"`
 }
