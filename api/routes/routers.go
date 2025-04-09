@@ -1,7 +1,9 @@
 package routes
 
 import (
+	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"os"
 	middlewares "shagya-tech-payment/api/middleware"
 	"time"
 )
@@ -21,4 +23,9 @@ func Route() {
 	{
 		master.Get("/product", ProductController.Product)
 	}
+	v1.Get("/storage/product/:filename", func(c *fiber.Ctx) error {
+		pwd, _ := os.Getwd()
+		filename := c.Params("filename")
+		return c.SendFile(fmt.Sprintf("%s/public/product/%s.png", pwd, filename))
+	})
 }

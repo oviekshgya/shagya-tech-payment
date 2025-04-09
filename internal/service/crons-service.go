@@ -4,11 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"go.mongodb.org/mongo-driver/mongo"
+	"io"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"shagya-tech-payment/internal/models"
 	"shagya-tech-payment/pkg"
+	"strings"
 )
 
 type CronsService struct {
@@ -32,20 +35,45 @@ func (s *CronsService) GetDataJson() (interface{}, error) {
 			log.Println("Error unmarshaling JSON:", err)
 		}
 
+		if len(jsonResponse) > 0 {
+			for i, product := range jsonResponse {
+				if strings.Contains(product.ImageURL, "https") {
+					resp, err := http.Get(product.ImageURL)
+					if err != nil {
+						panic(err)
+					}
+					defer resp.Body.Close()
+
+					imageName := pkg.GenerateMD5(product.ImageURL)
+
+					out, err := os.Create(fmt.Sprintf("%s/public/product/%s.png", pwd, imageName))
+					if err != nil {
+						panic(err)
+					}
+					defer out.Close()
+
+					_, err = io.Copy(out, resp.Body)
+					if err != nil {
+						panic(err)
+					}
+
+					jsonResponse[i].ImageURL = fmt.Sprintf("https://shagya-tech.my.id/api-payment/v.1/storage/product/%s", imageName)
+
+				}
+			}
+		}
+
 		model := models.CronsImpl{
 			DB:                          s.DB,
 			MasterDataProductCollection: jsonResponse,
 		}
 
 		data, errGet := model.GetAll()
-		fmt.Println("data", data)
 		if errGet == nil && len(data) <= 0 {
-			fmt.Println("Created", data)
 			if created := model.Create(jsonResponse); created != nil {
 				return created, nil
 			}
 		}
-		fmt.Println("ErrorGet", errGet)
 
 		return jsonResponse, nil
 	})
