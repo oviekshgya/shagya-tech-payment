@@ -50,7 +50,9 @@ func (s *ProductService) Product(category string, brand string, types string, co
 			var imageURL string
 			for _, sz := range jsonResponse {
 				matchCount := 0
+
 				words := strings.Fields(sz.Name)
+
 				for _, word := range words {
 					if strings.Contains(strings.ToLower(d.Brand), strings.ToLower(word)) {
 						matchCount++

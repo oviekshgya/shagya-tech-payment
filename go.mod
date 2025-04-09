@@ -5,7 +5,7 @@ go 1.23.0
 toolchain go1.23.4
 
 require (
-	github.com/agnivade/levenshtein v1.2.1
+	github.com/arbovm/levenshtein v0.0.0-20160628152529-48b4e1c0c4d0
 	github.com/gofiber/fiber/v2 v2.52.6
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/spf13/viper v1.20.1
