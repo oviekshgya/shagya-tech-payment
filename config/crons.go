@@ -9,7 +9,7 @@ import (
 func initCrons() {
 	c := cron.New()
 
-	c.AddFunc("* * * * *", func() {
+	c.AddFunc("0 0 1 * *", func() {
 		fmt.Println("cron job start add game product master")
 		res := routes.CronsController.GetDataJson()
 		fmt.Println("Add Game Product Master: ", res)
