@@ -20,7 +20,7 @@ WORKDIR /app
 COPY --from=builder /app/shagya-tech-payment /app/shagya-tech-payment
 
 COPY public/storage/img /app/public/storage/img
-COPY public/storage/img /app/public/storage/product
+COPY public/product /app/public/product
 COPY public/storage/json /app/public/storage/json
 
 COPY public/views /app/public/views
