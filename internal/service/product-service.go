@@ -9,7 +9,6 @@ import (
 	"os"
 	"shagya-tech-payment/internal/models"
 	"shagya-tech-payment/pkg"
-	"strings"
 )
 
 type ProductService struct {
@@ -44,25 +43,33 @@ func (s *ProductService) Product(category string, brand string, types string, co
 		log.Println("Error unmarshaling JSON:", err)
 	}
 
+	model := models.ProductImpl{
+		DB: s.DB,
+	}
+
 	var response []*pkg.ResponseProduct
 	if len(result.Data) > 0 {
 		for _, d := range result.Data {
 			var imageURL string
-			for _, sz := range jsonResponse {
-				matchCount := 0
-
-				words := strings.Fields(sz.Name)
-
-				for _, word := range words {
-					if strings.Contains(strings.ToLower(d.Brand), strings.ToLower(word)) {
-						matchCount++
-					}
-				}
-				if matchCount >= 2 {
-					imageURL = sz.ImageURL
-					break
-				}
+			get, errGet := model.SearchProductByName(d.Brand)
+			if errGet == nil {
+				imageURL = get.ImageURL
 			}
+			//for _, sz := range jsonResponse {
+			//	matchCount := 0
+			//
+			//	words := strings.Fields(sz.Name)
+			//
+			//	for _, word := range words {
+			//		if strings.Contains(strings.ToLower(d.Brand), strings.ToLower(word)) {
+			//			matchCount++
+			//		}
+			//	}
+			//	if matchCount >= 2 {
+			//		imageURL = sz.ImageURL
+			//		break
+			//	}
+			//}
 
 			response = append(response, &pkg.ResponseProduct{
 				ProductName:   d.ProductName,
